@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Welcome, <span id="userEmail"></span></h1>
+  <button onclick="logout()">Logout</button>
+
+  <h2>Add Course</h2>
+  <input id="title" placeholder="Course Title"><br>
+  <textarea id="description" placeholder="Course Description"></textarea><br>
+  <button onclick="addCourse()">Add</button>
+
+  <h2>Courses</h2>
+  <ul id="courseList"></ul>
+
+  <script type="module">
+    // ✅ Import Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // ✅ Firebase config (replace with your own)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGB8YwEtiXSC_IRRlxl0g3MVYc9M252rg",
+      authDomain: "e-learning-8dcdf.firebaseapp.com",
+      projectId:"e-learning-8dcdf",
+      appId: "1:744523952033:web:9a95f76c1b2b100d21a5e0",
+    };
+
+    // ✅ Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ✅ Check if user is logged in
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        document.getElementById("userEmail").textContent = user.email;
+        loadCourses(); // load after login
+      } else {
+        window.location.href = "index.html"; // redirect if not logged in
+      }
+    });
+
+    // ✅ Logout
+    window.logout = () => {
+      signOut(auth).then(() => {
+        window.location.href = "index.html";
+      });
+    };
+
+    // ✅ Add course to Firestore
+    window.addCourse = async () => {
+      const title = document.getElementById("title").value;
+      const description = document.getElementById("description").value;
+
+      if (!title || !description) {
+        alert("Please fill both fields.");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "courses"), {
+          title: title,
+          description: description
+        });
+        alert("Course added successfully!");
+        loadCourses();
+        document.getElementById("title").value = "";
+        document.getElementById("description").value = "";
+      } catch (e) {
+        alert("Error adding course: " + e.message);
+      }
+    };
+
+    // ✅ Load all courses
+    async function loadCourses() {
+      const courseList = document.getElementById("courseList");
+      courseList.innerHTML = ""; // clear list
+
+      const snapshot = await getDocs(collection(db, "courses"));
+      snapshot.forEach(doc => {
+        const course = doc.data();
+        const li = document.createElement("li");
+        li.textContent = `${course.title} - ${course.description}`;
+        courseList.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>

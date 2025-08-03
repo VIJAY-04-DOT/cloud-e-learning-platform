@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>E-Learning Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Login</h1>
+  <input id="email" type="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Password"><br>
+  <button onclick="login()">Login</button>
+  <button onclick="register()">Register</button>
+
+  <script type="module">
+    // ✅ 1. Import modular SDK
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // ✅ 2. Your Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAGB8YwEtiXSC_IRRlxl0g3MVYc9M252rg",
+      authDomain: "e-learning-8dcdf.firebaseapp.com",
+      projectId: "e-learning-8dcdf",
+      appId: "1:744523952033:web:9a95f76c1b2b100d21a5e0",
+    };
+
+    // ✅ 3. Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // ✅ 4. Register function
+    window.register = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        alert("Registered successfully!");
+      } catch (error) {
+        alert("Error: " + error.message);
+      }
+    };
+
+    // ✅ 5. Login function
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        alert("Login successful!");
+        window.location.href = "dashboard.html"; // redirect
+      } catch (error) {
+        alert("Login failed: " + error.message);
+      }
+    };
+  </script>
+</body>
+</html>

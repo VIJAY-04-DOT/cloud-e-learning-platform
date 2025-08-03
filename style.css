@@ -1,0 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f2f5;
+  text-align: center;
+  padding: 50px;
+}
+input, textarea {
+  padding: 10px;
+  margin: 5px;
+  width: 250px;
+  border-radius: 5px;
+}
+button {
+  padding: 10px 20px;
+  margin: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+button:hover {
+  background-color: #0056b3;
+}
